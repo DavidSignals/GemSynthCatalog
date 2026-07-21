@@ -1,0 +1,1 @@
+English version with catalog thumbnails for each gem card.
