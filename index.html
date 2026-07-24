@@ -71,6 +71,7 @@
     .shell { position:relative; z-index:1; }
     .hero-shell { display:grid; grid-template-columns: 1.18fr .82fr; min-height:100vh; }
 
+    /* Stage stays sticky at ALL breakpoints so the rotating gem is always visible while scrolling */
     .stage {
       position:sticky;
       top:0;
@@ -202,6 +203,8 @@
       grid-template-columns:repeat(3, minmax(0, 1fr));
       gap:var(--space-3);
     }
+
+    /* Catalog cards + thumbnails */
 
     .gem-card {
       position:relative;
@@ -350,6 +353,7 @@
     .stat span { color:var(--color-text); }
     .narrative { line-height:1.75; }
 
+    /* Textural reading scanner — faster, more tactile response */
     .scanner {
       position:relative;
       height:240px;
@@ -537,10 +541,656 @@
 </head>
 <body>
   <main class="shell">
-    <!-- … el resto del HTML es igual al que ya tienes, con la misma estructura de panels y JS … -->
+    <section class="hero-shell">
+      <div class="stage" aria-label="Immersive 3D gem chamber">
+        <canvas id="scene"></canvas>
+        <div class="stage-overlay">
+          <div class="topbar">
+            <div class="brand">
+              <svg class="logo" viewBox="0 0 64 64" aria-label="Ikcha logo" fill="none">
+                <circle cx="32" cy="32" r="28" stroke="currentColor" stroke-width="1.8" opacity=".55"/>
+                <path d="M20 25 29 15h6l9 10-12 24L20 25Z" stroke="currentColor" stroke-width="2.2"/>
+                <path d="M29 15l3 10 3-10M20 25h24M32 25v24" stroke="currentColor" stroke-width="1.7" opacity=".9"/>
+              </svg>
+              <div class="brand-mark">
+                <span class="eyebrow">Ikcha · high jewelry sensory experience</span>
+                <span class="brand-name">Sonic Gem Chamber</span>
+              </div>
+            </div>
+            <button class="control" id="audioToggle" aria-label="Enable sound">Enable sound</button>
+          </div>
+
+          <article class="hero-card">
+            <h1>A living collection of desire, mineral light, and vibration.</h1>
+            <p>This experience transforms each gemstone into an audiovisual entity: it rotates as a sculptural object, reveals its esoteric reading, and unfolds a sonic portrait inspired by the tension, purity, and symbolic density of its crystalline bonds.</p>
+            <div class="hero-metrics">
+              <div><strong>Presets</strong><span id="metricCount">30 curated gems</span></div>
+              <div><strong>Engine</strong><span>Three.js + procedural synthesis</span></div>
+              <div><strong>Mode</strong><span>Elite immersive exploration</span></div>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <div class="side">
+        <section class="panel">
+          <p class="section-label">Curation</p>
+          <h2>Presets integrated from your reference sheet</h2>
+          <p>The final page already integrates the gemstone families shown in your image: spinel, morganite, tourmaline, garnet, ruby, sapphire, citrine, topaz, diamond, emerald, aquamarine, alexandrite, amethyst, smoky quartz, and onyx, with chromatic variations and visual value tiers.</p>
+          <div class="chip-row" style="margin-top:1rem;">
+            <span class="chip">Didactic collection</span>
+            <span class="chip">Esoteric narrative</span>
+            <span class="chip">Sonic analysis</span>
+            <span class="chip">Tactile interaction</span>
+          </div>
+        </section>
+
+        <section class="panel">
+          <p class="section-label">Active catalog</p>
+          <h3>Select a gem</h3>
+          <div id="catalog" class="catalog-grid"></div>
+        </section>
+
+        <section class="panel">
+          <p class="section-label">Gem profile</p>
+          <h3 id="gemName">—</h3>
+          <p id="gemLead" class="narrative"></p>
+          <div class="detail-grid" style="margin-top:1rem;">
+            <div class="stat"><strong>Value</strong><span id="gemValue"></span></div>
+            <div class="stat"><strong>Frequency</strong><span id="gemFreq"></span></div>
+            <div class="stat"><strong>Structure</strong><span id="gemStructure"></span></div>
+            <div class="stat"><strong>Visual tone</strong><span id="gemColor"></span></div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <p class="section-label">Textural reading</p>
+          <div class="scanner" id="scanner">
+            <span class="scanner-hint">Drag to scan</span>
+          </div>
+          <p style="margin-top:1rem;" class="narrative">
+            Move your cursor or finger across the surface: the needle tracks instantly, reading facet
+            irregularities in real time and reshaping pitch, filter, and grain as it travels.
+          </p>
+        </section>
+
+        <section class="panel">
+          <p class="section-label">Sonic landscape</p>
+          <div class="sound-stage">
+            <div>
+              <h3>How its molecular architecture sounds</h3>
+              <p id="soundText" class="narrative"></p>
+              <div class="controls" style="margin-top:1rem;">
+                <button class="control primary" id="nextGem">Next gem</button>
+                <button class="control" id="autoTour">Tour mode</button>
+              </div>
+            </div>
+            <div class="mini-meter">
+              <div class="legend-row"><span>Harmonic brilliance</span><span id="energyLabel">40%</span></div>
+              <div class="bar"><span id="energyBar"></span></div>
+              <div class="legend-row"><span>Mineral density</span><span id="densityLabel">62%</span></div>
+              <div class="bar"><span id="densityBar"></span></div>
+              <div class="legend-row"><span>Spectral tension</span><span id="tensionLabel">55%</span></div>
+              <div class="bar"><span id="tensionBar"></span></div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section class="vault">
+      <div class="panel">
+        <p class="section-label">Didactic atlas</p>
+        <h3>Families and personalities within the collection</h3>
+        <div class="vault-grid" id="vaultGrid"></div>
+        <div class="footer-brand">
+          <div class="footer-left">
+            <div class="mark">✦</div>
+            <div>Ikcha · final immersive jewelry experience</div>
+          </div>
+          <div class="credit">By David Signals</div>
+        </div>
+      </div>
+    </section>
   </main>
-  <!-- Asegúrate solo de que en el script la cámara use:
-       camera.position.set(0, -2.8, 6.5);
-       camera.lookAt(0, -2.8, 0); -->
+
+  <script type="module">
+    import * as THREE from 'https://esm.sh/three@0.170.0';
+
+    const gems = [
+      { name:'Rose Spinel', family:'Spinel', value:'$ - $$$', frequency:314, color:'#d8a3c5', secondary:'#ffe3f3', structure:'MgAl₂O₄ · magnesian spinel', lead:'It feels like a gemstone of sophisticated grace, capable of restoring self-worth, tenderness, and serene sensuality.', sound:'The spinel lattice yields a compact, polished timbre; its partials appear like brief flashes, with a sweet and lightly velvety center.', shape:'oval', roughness:0.14, metalness:0.06, density:42, tension:36, energy:48 },
+      { name:'Imperial Morganite', family:'Morganite', value:'$ - $$$', frequency:341, color:'#efc5c1', secondary:'#fff1ef', structure:'Be₃Al₂Si₆O₁₈ · manganese-bearing beryl', lead:'It is associated with refined compassion, emotional openness, and delicate luxury; its presence does not dominate, it seduces.', sound:'Beryl bonds soften the attack and leave an airy, almost pink cloud where the spectrum expands without aggression.', shape:'cushion', roughness:0.17, metalness:0.04, density:38, tension:28, energy:40 },
+      { name:'Fuchsia Tourmaline', family:'Tourmaline', value:'$ - $$', frequency:392, color:'#ef3a8c', secondary:'#ffd7eb', structure:'Complex borosilicate group', lead:'It activates creative desire, magnetism, and self-expression, as if charging the body with bright emotional electricity.', sound:'Its complex chemistry inspires more irregular modulations, with expressive grain, nervous vibrato, and a tail oscillating between silk and spark.', shape:'round', roughness:0.12, metalness:0.08, density:50, tension:58, energy:72 },
+      { name:'Nocturnal Garnet', family:'Garnet', value:'$', frequency:278, color:'#5e0c16', secondary:'#ff8c9b', structure:'Nesosilicates with Fe, Mg, Ca, and Al', lead:'It feels dense, intimate, and ritualistic; a gem linked to the will to descend into depth and recover strength.', sound:'The mass of garnet suggests a dark resonant low end, short transients, and a red glow emerging in the upper harmonics.', shape:'round-dark', roughness:0.18, metalness:0.12, density:74, tension:45, energy:34 },
+      { name:'Royal Ruby', family:'Ruby', value:'$$$ - $$$$', frequency:528, color:'#f20f39', secondary:'#ffd2d8', structure:'Al₂O₃ · chromium-bearing corundum', lead:'It is the gem of vital drive, sovereign desire, and an ignited heart; it does not follow, it leads.', sound:'Chromium-bearing corundum generates crisp attacks, high energy, and scorched resonances, like red metal grazing a crystal chamber.', shape:'oval', roughness:0.1, metalness:0.14, density:68, tension:82, energy:94 },
+      { name:'Burgundy Spinel', family:'Spinel', value:'$ - $$$', frequency:332, color:'#6c2438', secondary:'#f9d4de', structure:'MgAl₂O₄ · dark-toned spinel', lead:'It offers shadowed elegance and magnetic protection, a nocturnal-salon beauty with sharpened intelligence.', sound:'Its spectral response combines controlled body and short sparks, ideal for an intimate timbre with a wine-dark shadow.', shape:'oval-dark', roughness:0.15, metalness:0.09, density:56, tension:49, energy:46 },
+      { name:'Honey Sapphire', family:'Sapphire', value:'$$ - $$$$', frequency:404, color:'#dd8616', secondary:'#ffe2b7', structure:'Al₂O₃ · iron-bearing corundum', lead:'In esoteric terms, it concentrates practical lucidity and stable decision-making, like intelligence tempered by fire.', sound:'Its rigid lattice produces tonal purity with a bright attack; the honey hue adds a warm veil that softens corundum rigidity.', shape:'oval', roughness:0.12, metalness:0.1, density:60, tension:65, energy:70 },
+      { name:'Solar Citrine', family:'Citrine', value:'$', frequency:360, color:'#d9901a', secondary:'#fff0b1', structure:'SiO₂ · quartz with ferric tones', lead:'It is tied to prosperity, clarity, and luminous affirmation; it enters the scene like a gem that awakens.', sound:'Quartz makes the timbre stable and transparent; the golden hue becomes mid-band sparkle, soft percussion, and optimistic brightness.', shape:'oval', roughness:0.16, metalness:0.04, density:35, tension:30, energy:62 },
+      { name:'Amber Topaz', family:'Topaz', value:'$$ - $$$', frequency:384, color:'#e59d2b', secondary:'#ffe0b5', structure:'Al₂SiO₄(F,OH)₂ · fluorinated topaz', lead:'In symbolic reading, it organizes desire and confidence, as if carving precise will into noble matter.', sound:'Topaz sounds defined and focused; fluorinated bonds inspire a bright center with clean edges and short reverberation.', shape:'emerald', roughness:0.13, metalness:0.05, density:44, tension:52, energy:66 },
+      { name:'Golden Tourmaline', family:'Tourmaline', value:'$$ - $$$', frequency:372, color:'#d7b248', secondary:'#fff3c2', structure:'Complex borosilicates with golden chromophores', lead:'It activates applied creativity and prosperity in motion, less solemn and more dynamic.', sound:'It appears as a bright granular texture, with small rhythmic instabilities that make the mineral feel almost alive.', shape:'trillion', roughness:0.14, metalness:0.07, density:46, tension:54, energy:68 },
+      { name:'Champagne Diamond', family:'Diamond', value:'$$$ - $$$$$', frequency:620, color:'#e8d884', secondary:'#fff6d0', structure:'C · tetrahedral covalent lattice', lead:'It is linked to sharpness, abundance, and absolute presence; it does not reflect light, it orders it.', sound:'Diamond’s extreme rigidity translates into sharpened harmonics, very high brilliance, and a clean trail that feels laser-sculpted.', shape:'marquise', roughness:0.06, metalness:0.03, density:92, tension:90, energy:98 },
+      { name:'Golden Citrine', family:'Citrine', value:'$', frequency:348, color:'#d8a42e', secondary:'#fff1b7', structure:'SiO₂ · golden quartz', lead:'Its gesture is warm and expansive; it works as an invitation to material confidence and disciplined optimism.', sound:'It vibrates with clear, dry partials, without excessive saturation, like a luminous bell wrapped in silk.', shape:'round', roughness:0.16, metalness:0.04, density:34, tension:27, energy:58 },
+      { name:'Royal-Cut Emerald', family:'Emerald', value:'$$ - $$$$$', frequency:444, color:'#027a4d', secondary:'#ccffd8', structure:'Be₃Al₂Si₆O₁₈ · chromium/vanadium-bearing beryl', lead:'It is associated with strategic vision, harmony, and regenerative wealth; it looks deep and brings order.', sound:'Green beryl unfolds dense yet soft layers, with a stable spectral core and a silky breath between bands.', shape:'emerald-tall', roughness:0.18, metalness:0.04, density:58, tension:47, energy:63 },
+      { name:'Square Green Tourmaline', family:'Tourmaline', value:'$$ - $$$', frequency:400, color:'#6dbd54', secondary:'#efffd6', structure:'Complex borosilicates in green phase', lead:'It expresses growth, energetic defense, and a living intelligence tied to nature.', sound:'Its spectrum is irregular and mobile, with strongly marked green accents in the mid frequencies and a flexible attack.', shape:'cushion-green', roughness:0.14, metalness:0.06, density:48, tension:42, energy:64 },
+      { name:'Green Garnet', family:'Garnet', value:'$$ - $$$', frequency:338, color:'#00a83d', secondary:'#d6ffd8', structure:'Green nesosilicates with iron and calcium', lead:'It is not a peaceful green: its force is vital, earthly, and competitive, like a forest with nerve.', sound:'Garnet density blends with vegetal brilliance, achieving a low-bodied core and a highly luminous edge.', shape:'round', roughness:0.17, metalness:0.08, density:66, tension:53, energy:73 },
+      { name:'Olive Sapphire', family:'Sapphire', value:'$$ - $$$$', frequency:388, color:'#87915e', secondary:'#f0ffd8', structure:'Al₂O₃ · olive-toned corundum', lead:'It feels sober, analytical, and protective, like a stone that stabilizes and cools impulse.', sound:'Olive corundum sounds tight and elegant, with contained resonances and a slow modulation that gives tactical depth.', shape:'oval', roughness:0.12, metalness:0.1, density:59, tension:61, energy:50 },
+      { name:'Electric Blue Topaz', family:'Topaz', value:'$$', frequency:470, color:'#0094ef', secondary:'#d2f2ff', structure:'Al₂SiO₄(F,OH)₂ · irradiated topaz', lead:'It brings precision, clear articulation, and a sense of liquid clarity with contemporary nerve.', sound:'It sounds with a clean attack, moderate body, and bright reflections; like a line of light moving across wet crystal.', shape:'cushion-blue', roughness:0.11, metalness:0.05, density:40, tension:68, energy:78 },
+      { name:'Celestial Aquamarine', family:'Aquamarine', value:'$$ - $$$$', frequency:432, color:'#94ddff', secondary:'#effcff', structure:'Be₃Al₂Si₆O₁₈ · blue beryl', lead:'It evokes calm, mental fluidity, and emotional truth; it is water organized into precious geometry.', sound:'Blue beryl is heard as open and transparent, with enough air to let silence pass between resonances.', shape:'oval', roughness:0.15, metalness:0.03, density:33, tension:22, energy:52 },
+      { name:'Blue Diamond', family:'Diamond', value:'$$$ - $$$$$', frequency:640, color:'#7fb6ff', secondary:'#eef7ff', structure:'C · tetrahedral covalent lattice with blue tone', lead:'It carries an aura of extreme exclusivity, absolute coolness, and high-tension luxury.', sound:'The compact covalent structure drives extreme brilliance and cutting definition; the blue color adds a glacial, elegant edge.', shape:'pear', roughness:0.05, metalness:0.03, density:94, tension:92, energy:99 },
+      { name:'Royal Blue Sapphire', family:'Sapphire', value:'$$ - $$$$$', frequency:486, color:'#103bda', secondary:'#d4dbff', structure:'Al₂O₃ · titanium/iron-bearing corundum', lead:'It represents nobility, focus, and a silent power that does not need to display itself.', sound:'Blue sapphire is tense, precise, and almost architectural; it feels like a sonic stroke carved in electric ice.', shape:'oval', roughness:0.09, metalness:0.1, density:70, tension:84, energy:88 },
+      { name:'Dual Alexandrite', family:'Alexandrite', value:'$$$ - $$$$$', frequency:512, color:'#6f39a8', secondary:'#bde5ff', structure:'BeAl₂O₄ · chromium-bearing chrysoberyl', lead:'Its mystery lies in mutation: adaptation, strategic intelligence, and rare magnetism.', sound:'Its chromatic duality becomes a blend of violet partials and cyan reflections; the timbre seems to change character with the light.', shape:'round-dual', roughness:0.12, metalness:0.09, density:64, tension:79, energy:84 },
+      { name:'Violet Amethyst', family:'Amethyst', value:'$ - $$', frequency:432, color:'#9a4fdf', secondary:'#f0d8ff', structure:'SiO₂ · amethyst quartz', lead:'It is linked to intuition, deep rest, and mental purification. It is contemplative, but not passive.', sound:'Amethyst quartz generates a clear timbre, with stable vibration, a soft bloom in the upper mids, and a meditative tail.', shape:'round', roughness:0.16, metalness:0.04, density:36, tension:26, energy:46 },
+      { name:'Lavender Spinel', family:'Spinel', value:'$ - $$$', frequency:326, color:'#8d5b8e', secondary:'#ffe5ff', structure:'MgAl₂O₄ · lilac spinel', lead:'It feels elegant, introspective, and subtly protective, ideal for a less obvious kind of luxury.', sound:'Its partials are rounded and intimate, with medium pressure and contained brilliance that never shouts.', shape:'pear', roughness:0.14, metalness:0.07, density:45, tension:34, energy:42 },
+      { name:'Orchid Sapphire', family:'Sapphire', value:'$$ - $$$$', frequency:452, color:'#ca68da', secondary:'#ffe1ff', structure:'Al₂O₃ · pink-violet corundum', lead:'It speaks of expressive refinement, glamour, and emotional control with ceremonial brilliance.', sound:'Corundum rigidity is softened by a floral veil; it sounds defined, seductive, and highly polished.', shape:'pear', roughness:0.1, metalness:0.1, density:58, tension:66, energy:74 },
+      { name:'Smoky Quartz', family:'Smoky Quartz', value:'$ - $$', frequency:286, color:'#8d6b50', secondary:'#f4e0c6', structure:'SiO₂ · naturally irradiated quartz', lead:'It symbolizes grounding, purification, and earthly presence; it absorbs emotional noise and returns focus.', sound:'It behaves like a low quartz, with less brilliance than citrine and a veil of smoke in the sustain.', shape:'oval', roughness:0.18, metalness:0.04, density:41, tension:24, energy:32 },
+      { name:'Black Onyx', family:'Onyx', value:'$', frequency:220, color:'#151515', secondary:'#d0d0d0', structure:'Microcrystalline SiO₂ · banded chalcedony', lead:'It is containment, protection, and authority; a dense presence that defines the field.', sound:'Its voice is minimal yet forceful: clean lows, little harmonic dispersion, and a very elegant dry darkness.', shape:'round-flat', roughness:0.24, metalness:0.02, density:88, tension:40, energy:20 },
+      { name:'Black Tourmaline', family:'Tourmaline', value:'$ - $$', frequency:246, color:'#050505', secondary:'#dddddd', structure:'Complex borosilicates of schorl phase', lead:'It is associated with energetic shielding and the filtering of external excess; it is the stone of intelligent boundaries.', sound:'Schorl inspires a dark mineral hum with rough grain, a narrow filter, and a tectonic pulse.', shape:'pear-dark', roughness:0.22, metalness:0.04, density:86, tension:58, energy:26 },
+      { name:'Salt-and-Pepper Diamond', family:'Diamond', value:'$$ - $$$', frequency:564, color:'#b9b9b9', secondary:'#ffffff', structure:'C · covalent lattice with visible inclusions', lead:'It turns imperfection into character. It does not seek absolute purity, but geological personality.', sound:'Its inclusions read as microscopic crackles inside precise brilliance; it is a diamond with internal narrative.', shape:'round-salt', roughness:0.08, metalness:0.03, density:85, tension:75, energy:82 },
+      { name:'White Sapphire', family:'Sapphire', value:'$$ - $$$$', frequency:500, color:'#f4f4f2', secondary:'#ffffff', structure:'Al₂O₃ · colorless corundum', lead:'It feels pure, rational, and ceremonial, like a disciplined form of light.', sound:'It offers a clean, high-contrast timbre, with ordered harmonics and a clear, almost architectural trail.', shape:'oval-white', roughness:0.09, metalness:0.05, density:61, tension:78, energy:86 },
+      { name:'Invaluable Diamond', family:'Diamond', value:'$$$ - $$$$$', frequency:660, color:'#ffffff', secondary:'#ffffff', structure:'C · highly pure tetrahedral covalent lattice', lead:'It is the culmination of mineral luxury: absolute focus, total presence, and a beauty that feels outside time.', sound:'Its perfect rigidity becomes extreme brilliance, fast transients, and a sharp spectrum that seems to cut the air into facets.', shape:'round-brilliant', roughness:0.04, metalness:0.02, density:97, tension:96, energy:100 }
+    ];
+
+    const state = {
+      index: 0,
+      audioReady: false,
+      playing: false,
+      autoTour: false,
+      needleX: 52,
+      needleY: 42,
+      scanEnergy: 0,
+      lastScanX: 52,
+      lastScanY: 42,
+      lastScanT: 0,
+      scanning: false
+    };
+
+    const renderer = new THREE.WebGLRenderer({
+      canvas: document.getElementById('scene'),
+      antialias: true,
+      alpha: true
+    });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.FogExp2(0x06070a, 0.075);
+
+    const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 100);
+    camera.position.set(0, -3.4, 6.5);
+
+    const ambient = new THREE.AmbientLight(0xd7deff, 1.05);
+    const key = new THREE.PointLight(0xcbe7ff, 32, 30, 2);
+    key.position.set(3.5, 2.6, 4.4);
+    const fill = new THREE.PointLight(0xe0b8ff, 20, 28, 2);
+    fill.position.set(-4, -1.8, 3.2);
+    const rim = new THREE.PointLight(0xffd98a, 15, 24, 2);
+    rim.position.set(0, -3, 2.2);
+    scene.add(ambient, key, fill, rim);
+
+    const gemGroup = new THREE.Group();
+    scene.add(gemGroup);
+
+    const halo = new THREE.Mesh(
+      new THREE.TorusGeometry(2.25, 0.028, 16, 220),
+      new THREE.MeshBasicMaterial({ color: 0xcbe7ff, transparent: true, opacity: 0.25 })
+    );
+    halo.rotation.x = Math.PI * 0.5;
+    scene.add(halo);
+
+    const starField = new THREE.Group();
+    for (let i = 0; i < 180; i++) {
+      const m = new THREE.Mesh(
+        new THREE.SphereGeometry(Math.random() * 0.02 + 0.006, 6, 6),
+        new THREE.MeshBasicMaterial({
+          color: new THREE.Color().setHSL(0.5 + Math.random() * 0.18, 0.8, 0.76),
+          transparent: true,
+          opacity: Math.random() * 0.45 + 0.2
+        })
+      );
+      const r = 2.9 + Math.random() * 1.8;
+      const a = Math.random() * Math.PI * 2;
+      const h = (Math.random() - 0.5) * 2.8;
+      m.userData = { r, a, h, speed: 0.001 + Math.random() * 0.0023 };
+      starField.add(m);
+    }
+    scene.add(starField);
+
+    let currentMesh = null;
+    function gemGeometry(shape) {
+      switch (shape) {
+        case 'oval': return new THREE.SphereGeometry(1.45, 8, 8).scale(0.95, 1.25, 0.72);
+        case 'oval-dark': return new THREE.IcosahedronGeometry(1.42, 0).scale(0.88, 1.28, 0.74);
+        case 'oval-white': return new THREE.IcosahedronGeometry(1.42, 0).scale(0.93, 1.26, 0.76);
+        case 'cushion': return new THREE.BoxGeometry(2.1, 2.1, 1.1, 4, 4, 3);
+        case 'cushion-green': return new THREE.BoxGeometry(2.15, 2.15, 1.2, 3, 3, 2);
+        case 'cushion-blue': return new THREE.BoxGeometry(2.0, 2.0, 1.18, 4, 4, 3);
+        case 'emerald': return new THREE.BoxGeometry(1.9, 2.4, 1.1, 2, 4, 2);
+        case 'emerald-tall': return new THREE.BoxGeometry(1.8, 2.65, 1.14, 2, 5, 2);
+        case 'round': return new THREE.IcosahedronGeometry(1.45, 0);
+        case 'round-dark': return new THREE.IcosahedronGeometry(1.38, 0);
+        case 'round-dual': return new THREE.IcosahedronGeometry(1.45, 1);
+        case 'round-flat': return new THREE.CylinderGeometry(1.35, 1.35, 0.7, 32, 1, false);
+        case 'round-salt': return new THREE.IcosahedronGeometry(1.44, 1);
+        case 'pear': return new THREE.SphereGeometry(1.2, 8, 8).scale(0.95, 1.45, 0.72);
+        case 'pear-dark': return new THREE.ConeGeometry(1.08, 2.4, 7, 1).translate(0, -0.15, 0);
+        case 'trillion': return new THREE.CylinderGeometry(1.45, 1.45, 0.72, 3, 1, false);
+        case 'marquise': return new THREE.OctahedronGeometry(1.52, 0).scale(0.86, 1.35, 0.7);
+        case 'round-brilliant': return new THREE.IcosahedronGeometry(1.52, 1);
+        default: return new THREE.IcosahedronGeometry(1.42, 0);
+      }
+    }
+
+    function buildGem(gem) {
+      if (currentMesh) {
+        gemGroup.remove(currentMesh);
+        currentMesh.geometry.dispose();
+        currentMesh.material.dispose();
+      }
+      const geometry = gemGeometry(gem.shape);
+      const material = new THREE.MeshPhysicalMaterial({
+        color: new THREE.Color(gem.color),
+        emissive: new THREE.Color(gem.color).multiplyScalar(0.18),
+        roughness: gem.roughness,
+        metalness: gem.metalness,
+        transmission:
+          gem.family === 'Onyx' ||
+          (gem.family.includes('Tourmaline') && gem.color === '#050505')
+            ? 0.08
+            : 0.8,
+        thickness: 2.3,
+        ior: gem.family === 'Diamond' ? 2.1 : 1.57,
+        transparent: true,
+        opacity: gem.family === 'Onyx' ? 0.96 : 0.98,
+        envMapIntensity: 1.25,
+        clearcoat: 1,
+        clearcoatRoughness: 0.1,
+        sheen: 0.8,
+        sheenColor: new THREE.Color(gem.secondary)
+      });
+      currentMesh = new THREE.Mesh(geometry, material);
+      gemGroup.add(currentMesh);
+      currentMesh.rotation.z = gem.shape.includes('pear') ? Math.PI : 0;
+    }
+
+    const catalog = document.getElementById('catalog');
+    const vaultGrid = document.getElementById('vaultGrid');
+
+    function renderCatalog() {
+      catalog.innerHTML = gems.map((gem, index) => `
+        <button
+          class="gem-card ${index === state.index ? 'active' : ''}"
+          data-index="${index}"
+          style="--card-color:${gem.color}; --card-glow:${gem.secondary};"
+        >
+          <div class="gem-thumb">
+            <div class="gem-thumb-inner gem-thumb-${gem.shape}"></div>
+          </div>
+          <span class="type">
+            <span class="dot"></span>${gem.family}
+          </span>
+          <h4>${gem.name}</h4>
+          <p>${gem.lead.slice(0, 92)}…</p>
+          <span class="price">${gem.value}</span>
+        </button>
+      `).join('');
+
+      catalog.querySelectorAll('.gem-card').forEach(btn =>
+        btn.addEventListener('click', () =>
+          selectGem(Number(btn.dataset.index))
+        )
+      );
+    }
+
+    function renderVault() {
+      const families = [...new Map(gems.map(g => [g.family, g])).values()];
+      vaultGrid.innerHTML = families.map(gem => `
+        <article class="vault-card">
+          <strong>${gem.family}</strong>
+          <span>${gem.value}</span>
+          <p>${gem.sound}</p>
+        </article>
+      `).join('');
+    }
+
+    const refs = {
+      name: document.getElementById('gemName'),
+      lead: document.getElementById('gemLead'),
+      value: document.getElementById('gemValue'),
+      freq: document.getElementById('gemFreq'),
+      structure: document.getElementById('gemStructure'),
+      color: document.getElementById('gemColor'),
+      sound: document.getElementById('soundText'),
+      energyBar: document.getElementById('energyBar'),
+      densityBar: document.getElementById('densityBar'),
+      tensionBar: document.getElementById('tensionBar'),
+      energyLabel: document.getElementById('energyLabel'),
+      densityLabel: document.getElementById('densityLabel'),
+      tensionLabel: document.getElementById('tensionLabel')
+    };
+
+    function selectGem(index) {
+      state.index = (index + gems.length) % gems.length;
+      const gem = gems[state.index];
+
+      refs.name.textContent = gem.name;
+      refs.lead.textContent = gem.lead;
+      refs.value.textContent = gem.value;
+      refs.freq.textContent = `${gem.frequency} Hz`;
+      refs.structure.textContent = gem.structure;
+      refs.color.textContent = gem.color;
+      refs.sound.textContent = gem.sound;
+
+      refs.energyBar.style.width = `${gem.energy}%`;
+      refs.densityBar.style.width = `${gem.density}%`;
+      refs.tensionBar.style.width = `${gem.tension}%`;
+
+      refs.energyLabel.textContent = `${gem.energy}%`;
+      refs.densityLabel.textContent = `${gem.density}%`;
+      refs.tensionLabel.textContent = `${gem.tension}%`;
+
+      buildGem(gem);
+      renderCatalog();
+
+      if (state.audioReady) {
+        retuneAudio(gem);
+      }
+    }
+
+    /* ---------- AUDIO ENGINE ---------- */
+
+    let audioCtx, masterGain, oscA, oscB, noiseNode, filter, shelf, lfo, analyser, scanGain, scanFilter;
+
+    async function setupAudio() {
+      if (state.audioReady) return;
+
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      masterGain = audioCtx.createGain();
+      masterGain.gain.value = 0.0001;
+
+      filter = audioCtx.createBiquadFilter();
+      filter.type = 'bandpass';
+
+      // Extra filter dedicated to live scanner interaction — fast, expressive
+      scanFilter = audioCtx.createBiquadFilter();
+      scanFilter.type = 'peaking';
+      scanFilter.frequency.value = 1200;
+      scanFilter.Q.value = 4;
+      scanFilter.gain.value = 0;
+
+      shelf = audioCtx.createBiquadFilter();
+      shelf.type = 'highshelf';
+      shelf.frequency.value = 2800;
+
+      analyser = audioCtx.createAnalyser();
+      analyser.fftSize = 256;
+
+      oscA = audioCtx.createOscillator();
+      oscB = audioCtx.createOscillator();
+      lfo = audioCtx.createOscillator();
+
+      const lfoGain = audioCtx.createGain();
+
+      oscA.type = 'triangle';
+      oscB.type = 'sine';
+      lfo.type = 'sine';
+
+      lfo.frequency.value = 0.18;
+      lfoGain.gain.value = 170;
+
+      lfo.connect(lfoGain).connect(filter.frequency);
+
+      const noiseBuffer = audioCtx.createBuffer(1, audioCtx.sampleRate * 2, audioCtx.sampleRate);
+      const data = noiseBuffer.getChannelData(0);
+      for (let i = 0; i < data.length; i++) {
+        data[i] = (Math.random() * 2 - 1) * 0.25;
+      }
+      noiseNode = audioCtx.createBufferSource();
+      noiseNode.buffer = noiseBuffer;
+      noiseNode.loop = true;
+
+      scanGain = audioCtx.createGain();
+      scanGain.gain.value = 0.02;
+
+      const noiseFilter = audioCtx.createBiquadFilter();
+      noiseFilter.type = 'highpass';
+      noiseFilter.frequency.value = 1600;
+
+      oscA.connect(filter);
+      oscB.connect(filter);
+
+      filter.connect(scanFilter)
+            .connect(shelf)
+            .connect(masterGain)
+            .connect(analyser)
+            .connect(audioCtx.destination);
+
+      noiseNode.connect(noiseFilter)
+               .connect(scanGain)
+               .connect(masterGain);
+
+      oscA.start();
+      oscB.start();
+      lfo.start();
+      noiseNode.start();
+
+      state.audioReady = true;
+      retuneAudio(gems[state.index]);
+    }
+
+    function retuneAudio(gem) {
+      if (!state.audioReady) return;
+
+      const t = audioCtx.currentTime;
+
+      oscA.frequency.cancelScheduledValues(t);
+      oscB.frequency.cancelScheduledValues(t);
+      filter.frequency.cancelScheduledValues(t);
+      shelf.gain.cancelScheduledValues(t);
+
+      oscA.frequency.linearRampToValueAtTime(gem.frequency, t + 0.4);
+      oscB.frequency.linearRampToValueAtTime(
+        gem.frequency * (1.2 + gem.tension / 200),
+        t + 0.6
+      );
+      filter.frequency.linearRampToValueAtTime(
+        gem.frequency * (1.5 + gem.energy / 120),
+        t + 0.6
+      );
+
+      filter.Q.value = 3 + gem.tension / 16;
+
+      shelf.gain.linearRampToValueAtTime(
+        2 + gem.energy / 10,
+        t + 0.5
+      );
+    }
+
+    async function toggleAudio() {
+      await setupAudio();
+
+      if (audioCtx.state === 'suspended') {
+        await audioCtx.resume();
+      }
+
+      state.playing = !state.playing;
+      const t = audioCtx.currentTime;
+
+      masterGain.gain.cancelScheduledValues(t);
+      masterGain.gain.linearRampToValueAtTime(
+        state.playing ? 0.17 : 0.0001,
+        t + 0.7
+      );
+
+      document.getElementById('audioToggle').textContent =
+        state.playing ? 'Mute' : 'Enable sound';
+
+      retuneAudio(gems[state.index]);
+    }
+
+    document.getElementById('audioToggle').addEventListener('click', toggleAudio);
+    document.getElementById('nextGem').addEventListener('click', () => selectGem(state.index + 1));
+    document.getElementById('autoTour').addEventListener('click', (e) => {
+      state.autoTour = !state.autoTour;
+      e.currentTarget.textContent = state.autoTour ? 'Tour active' : 'Tour mode';
+    });
+
+    /* ---------- SCANNER: instant, tactile, sound-reactive ---------- */
+
+    const scannerEl = document.getElementById('scanner');
+
+    function updateScanFromEvent(clientX, clientY) {
+      const rect = scannerEl.getBoundingClientRect();
+      const px = Math.min(Math.max((clientX - rect.left) / rect.width, 0), 1);
+      const py = Math.min(Math.max((clientY - rect.top) / rect.height, 0), 1);
+      const x = px * 100;
+      const y = py * 100;
+
+      const now = performance.now();
+      const dt = Math.max(now - state.lastScanT, 1) / 1000;
+      const dx = x - state.lastScanX;
+      const dy = y - state.lastScanY;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      const speed = Math.min(dist / dt / 40, 1); // normalized 0-1
+
+      state.needleX = x;
+      state.needleY = y;
+      state.scanEnergy = Math.min(state.scanEnergy * 0.6 + speed * 0.9, 1);
+
+      state.lastScanX = x;
+      state.lastScanY = y;
+      state.lastScanT = now;
+
+      document.documentElement.style.setProperty('--needle-x', `${x}%`);
+      document.documentElement.style.setProperty('--needle-y', `${y}%`);
+
+      if (state.audioReady) {
+        const t = audioCtx.currentTime;
+        const gem = gems[state.index];
+
+        // Live, fast-responding modulation tied directly to scan speed and position
+        const targetFreq = gem.frequency * (1.4 + speed * 2.2 + (1 - py) * 0.6);
+        filter.frequency.setTargetAtTime(targetFreq, t, 0.03);
+        filter.Q.value = 2 + speed * 14 + gem.tension / 20;
+
+        scanFilter.frequency.setTargetAtTime(600 + px * 3200, t, 0.02);
+        scanFilter.gain.setTargetAtTime(speed * 18, t, 0.02);
+
+        scanGain.gain.setTargetAtTime(0.015 + speed * 0.12, t, 0.02);
+
+        shelf.gain.setTargetAtTime(2 + gem.energy / 10 + speed * 10, t, 0.05);
+      }
+    }
+
+    function handlePointerDown(e) {
+      state.scanning = true;
+      state.lastScanT = performance.now();
+      const point = e.touches ? e.touches[0] : e;
+      updateScanFromEvent(point.clientX, point.clientY);
+    }
+    function handlePointerMove(e) {
+      if (!state.scanning) return;
+      const point = e.touches ? e.touches[0] : e;
+      updateScanFromEvent(point.clientX, point.clientY);
+      e.preventDefault();
+    }
+    function handlePointerUp() {
+      state.scanning = false;
+    }
+
+    scannerEl.addEventListener('mousedown', handlePointerDown);
+    scannerEl.addEventListener('mousemove', (e) => {
+      // Even without pressing, hovering gives a light live response
+      if (!state.scanning) updateScanFromEvent(e.clientX, e.clientY);
+    });
+    window.addEventListener('mouseup', handlePointerUp);
+
+    scannerEl.addEventListener('touchstart', handlePointerDown, { passive:false });
+    scannerEl.addEventListener('touchmove', handlePointerMove, { passive:false });
+    scannerEl.addEventListener('touchend', handlePointerUp);
+
+    /* ---------- Ambient camera parallax (separate from scanner) ---------- */
+
+    const pointer = new THREE.Vector2();
+    window.addEventListener('pointermove', (e) => {
+      pointer.x = (e.clientX / window.innerWidth) * 2 - 1;
+      pointer.y = -((e.clientY / window.innerHeight) * 2 - 1);
+    });
+
+    function resize() {
+      const parent = renderer.domElement.parentElement;
+      renderer.setSize(parent.clientWidth, parent.clientHeight, false);
+      camera.aspect = parent.clientWidth / parent.clientHeight;
+      camera.updateProjectionMatrix();
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    renderCatalog();
+    renderVault();
+    document.getElementById('metricCount').textContent = `${gems.length} curated gems`;
+    selectGem(0);
+
+    const spectrum = new Uint8Array(128);
+    let last = performance.now();
+    let tourTimer = 0;
+
+    function animate(now) {
+      const dt = Math.min((now - last) / 1000, 0.033);
+      last = now;
+      requestAnimationFrame(animate);
+
+      halo.rotation.z += dt * 0.15;
+      halo.material.opacity = 0.2 + Math.sin(now * 0.001) * 0.06;
+
+      gemGroup.rotation.y += dt * 0.42;
+      gemGroup.rotation.x = Math.sin(now * 0.00045) * 0.22;
+      gemGroup.position.y = Math.sin(now * 0.0011) * 0.15;
+
+      starField.children.forEach((p) => {
+        p.userData.a += p.userData.speed * (state.playing ? 2 : 1.1);
+        p.position.set(
+          Math.cos(p.userData.a) * p.userData.r,
+          p.userData.h + Math.sin(now * 0.001 + p.userData.a) * 0.24,
+          Math.sin(p.userData.a) * p.userData.r
+        );
+      });
+
+      camera.position.x += ((pointer.x * 0.52) - camera.position.x) * 0.03;
+      camera.position.y += ((-0.85 + pointer.y * 0.34) - camera.position.y) * 0.03;
+      camera.lookAt(0, -1.4, 0);
+
+      let energy = gems[state.index].energy / 100;
+      if (state.audioReady) {
+        analyser.getByteFrequencyData(spectrum);
+        energy = spectrum.reduce((sum, v) => sum + v, 0) / (spectrum.length * 255);
+      }
+
+      if (currentMesh) {
+        currentMesh.material.emissiveIntensity = 0.22 + energy * 1.8 + state.scanEnergy * 0.9;
+        currentMesh.scale.setScalar(1 + energy * 0.11 + state.scanEnergy * 0.05);
+      }
+
+      // Needle angle spins faster while actively scanning for a "reading head" feel
+      const spinSpeed = state.scanning ? 0.22 : 0.045;
+      document.documentElement.style.setProperty('--needle-angle', `${(now * spinSpeed) % 360}deg`);
+
+      // Decay scan energy smoothly when not actively scanning
+      state.scanEnergy *= 0.94;
+
+      scannerEl.style.filter =
+        `saturate(${1 + energy * 1.15 + state.scanEnergy * 0.6}) brightness(${1 + energy * 0.18 + state.scanEnergy * 0.25})`;
+
+      if (state.autoTour) {
+        tourTimer += dt;
+        if (tourTimer > 5.2) {
+          selectGem(state.index + 1);
+          tourTimer = 0;
+        }
+      }
+
+      renderer.render(scene, camera);
+    }
+
+    requestAnimationFrame(animate);
+  </script>
 </body>
 </html>
