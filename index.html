@@ -715,7 +715,7 @@
     scene.fog = new THREE.FogExp2(0x06070a, 0.075);
 
     const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 100);
-    camera.position.set(0, 15.4, 6.5);
+    camera.position.set(0, -2.0, 6.5);
 
     const ambient = new THREE.AmbientLight(0xd7deff, 1.05);
     const key = new THREE.PointLight(0xcbe7ff, 32, 30, 2);
@@ -1155,8 +1155,8 @@
       });
 
       camera.position.x += ((pointer.x * 0.52) - camera.position.x) * 0.03;
-      camera.position.y += ((-2.85 + pointer.y * 0.34) - camera.position.y) * 0.03;
-      camera.lookAt(0, -1.4, 0);
+      camera.position.y += ((-2.0 + pointer.y * 0.34) - camera.position.y) * 0.03;
+      camera.lookAt(0, -2.0, 0);
 
       let energy = gems[state.index].energy / 100;
       if (state.audioReady) {
