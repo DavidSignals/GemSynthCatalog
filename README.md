@@ -73,3 +73,31 @@ ikcha-sonic-gem-chamber/
 ├── index.html       # 🟢 MAIN FILE: Contains all HTML, CSS, and JS logic.
 ├── README.md        # 📖 You are reading this right now.
 └── assets/          # 📁 (Optional) Folder for future 3D models (.glb), images, or fonts.
+
+🚀 Getting Started
+You can run this project in less than 10 seconds. No installation required.
+💻 Option 1: Run Locally (For Development)
+Download or clone this repository.
+Locate the index.html file.
+Double-click index.html to open it in Chrome, Edge, Safari, or Firefox.
+Tip for developers: Use VS Code with the "Live Server" extension for hot-reloading while editing.
+🌍 Option 2: Deploy to the Web (For Production)
+You can host this for free in 1 click:
+GitHub Pages: Push this to a GitHub repo and enable Pages in settings.
+Netlify / Vercel: Drag and drop the ikcha-sonic-gem-chamber folder into their dashboard.
+🕹️ User Guide
+How to navigate the experience:
+Enable Audio: Click the "Enable sound" button in the top right. (Browsers require user interaction before playing audio).
+Browse the Catalog: Scroll down the right panel to see the 30 presets. Click any card to load the gem into the 3D stage.
+Interact with the Scanner: In the Textural Reading section, drag your mouse or finger around the grid. Notice how the needle follows you and the sound gets more intense the faster you move.
+Tour Mode: Click the "Tour mode" button to automatically cycle through the collection.
+🔮 Future Roadmap
+�Integrate 30+ gemstone presets.
+�Add real-time procedural audio synthesis.
+�Make the Textural Scanner responsive to touch/mouse speed.
+�Add .glb / .gltf photorealistic 3D models to replace parametric shapes.
+�Implement HDRI Environment maps for ultra-realistic studio reflections.
+�Add multi-language support (English / Spanish).
+👨‍💻 Author
+Created by David Signals
+Curated immersive jewelry experience blending web technology, DSP (Digital Signal Processing), and editorial design.
