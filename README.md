@@ -59,15 +59,13 @@ We use a `MeshPhysicalMaterial` for the gems. Why? Because it calculates how lig
 When you select a gem, we don't play an MP3. We generate the sound from scratch!
 *   **Oscillators (`oscA`, `oscB`)**: Generate the base tone using Sine and Triangle waves based on the gem's frequency (e.g., 528Hz for Ruby).
 *   **Filters (`BiquadFilterNode`)**: We pass the sound through filters.
-*   **The Scanner Interaction**: When you drag your finger on the *Textural Reading* panel, we calculate the speed of your movement and use it to instantly open the filter and increase the gain. Faster movement = brighter, louder sound.
+*   **The Scanner Interaction**: When you drag your finger on the *Textural Reading* panel, we calculate the speed of your movement and use it to instantly open the file and increase the gain. Faster movement = brighter, louder sound.
 
 ---
 
 ## 🗂️ Project Structure
 
 Because this is a vanilla web application, the structure is incredibly simple:
-
-```text
 ikcha-sonic-gem-chamber/
 │
 ├── index.html       # 🟢 MAIN FILE: Contains all HTML, CSS, and JS logic.
